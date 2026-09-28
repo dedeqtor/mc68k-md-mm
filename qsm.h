@@ -82,6 +82,13 @@ namespace mc68k
 
 		Port& getPortQS() { return m_portQS; }
 
+		template<typename TStream> void serializeState(TStream& _s)
+		{
+			PeripheralBase::serializeState(_s);
+			_s(m_portQS, m_nextQueue, m_spiDelay, m_spiTxData, m_sciTxData, m_sciRxData,
+				m_sciRxDataEmpty, m_sciRxDelay, m_lastSciRxByte, m_pendingTxDataCounter);
+		}
+
 		void setSpiWriteCallback(const SpiTxCallback& _callback);
 		void setSpiWriteFinishCallback(const SpiTxFinishCallback& _callback);
 

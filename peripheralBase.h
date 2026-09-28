@@ -50,6 +50,11 @@ namespace mc68k
 		static constexpr uint32_t base() { return Base; }
 		static constexpr uint32_t size() { return Size; }
 
+		template<typename TStream> void serializeState(TStream& _s)
+		{
+			_s(m_buffer);
+		}
+
 	private:
 		std::array<uint8_t, Size> m_buffer;
 	};

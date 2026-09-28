@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <atomic>
+#include <cstddef>
 #include <cstdlib>
 #include <fstream>
 #include <cstring>	// strstr
@@ -214,6 +215,19 @@ namespace mc68k
 	const CpuState* Mc68k::getCpuState() const
 	{
 		return m_cpuState;
+	}
+
+	size_t Mc68k::cpuRegisterStateSize()
+	{
+		// Everything before the cycle tables is plain register state.
+		return offsetof(m68ki_cpu_core, cyc_instruction);
+	}
+
+	int* Mc68k::cpuCycleBudget()
+	{
+		static_assert(offsetof(m68ki_cpu_core, m68ki_remaining_cycles)
+			== offsetof(m68ki_cpu_core, m68ki_initial_cycles) + sizeof(int), "cycle budget layout");
+		return &m_cpuState->m68ki_initial_cycles;
 	}
 
 	bool Mc68k::dumpAssembly(const std::string& _filename, uint32_t _first, uint32_t _count, bool _splitFunctions/* = true*/)

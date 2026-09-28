@@ -30,6 +30,12 @@ namespace mc68k
 
 		void timerOverflow();
 
+		template<typename TStream> void serializeState(TStream& _s)
+		{
+			PeripheralBase::serializeState(_s);
+			_s(m_portGP, m_tocLoad);
+		}
+
 	private:
 		template<uint32_t TocIndex>	void execToc(uint32_t _deltaCycles);
 		template<uint32_t TocIndex>	void updateToc();

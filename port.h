@@ -57,6 +57,11 @@ namespace mc68k
 			writeRX(read() & ~(1<<_bit));
 		}
 
+		template<typename TStream> void serializeState(TStream& _s)
+		{
+			_s(m_direction, m_enabledPins, m_data, m_writeCounter);
+		}
+
 		void setDirectionChangeCallback(const std::function<void(const Port&)>& _func);
 		void setWriteTXCallback(const std::function<void(const Port&)>& _func);
 		void setReadRXCallback(const std::function<uint8_t(const Port&, uint8_t)>& _func);

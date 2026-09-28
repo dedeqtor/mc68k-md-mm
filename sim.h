@@ -42,6 +42,12 @@ namespace mc68k
 
 		void setExternalClockHz(const uint32_t _hz);
 
+		template<typename TStream> void serializeState(TStream& _s)
+		{
+			PeripheralBase::serializeState(_s);
+			_s(m_timerLoadValue, m_timerCurrentValue, m_portE, m_portF, m_externalClockHz, m_systemClockHz);
+		}
+
 	private:
 		void initTimer();
 		void updateClock();

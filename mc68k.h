@@ -1,6 +1,8 @@
 #pragma once
 
 #include <array>
+#include <cstddef>
+#include <deque>
 #include <string>
 
 #include "endian.h"
@@ -109,6 +111,17 @@ namespace mc68k
 		const CpuState* getCpuState() const;
 
 		bool dumpAssembly(const std::string& _filename, uint32_t _first, uint32_t _count, bool _splitFunctions = true);
+
+		// Registers and cycle budget of the core. Host callbacks and cycle tables
+		// stay as constructed.
+		template<typename TStream> void serializeState(TStream& _s)
+		{
+			_s.marker(0x36384b31);	// "68K1"
+			_s.raw(m_cpuStateBuf.data(), cpuRegisterStateSize());
+			auto* const cycles = cpuCycleBudget();
+			_s(cycles[0], cycles[1]);
+			_s(m_gpt, m_sim, m_qsm, m_pendingInterrupts, m_cycles);
+		}
 		
 	protected:
 		// Select the Musashi CPU type. The public constructor retains the 68020 default.
@@ -118,6 +131,9 @@ namespace mc68k
 		uint32_t execInstruction();
 
 		void raiseIPL();
+
+		static size_t cpuRegisterStateSize();
+		int* cpuCycleBudget();	// initial and remaining cycles of the current timeslice
 
 		std::array<uint8_t, CpuStateSize> m_cpuStateBuf;
 		CpuState* m_cpuState;

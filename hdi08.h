@@ -118,6 +118,13 @@ namespace mc68k
 			}
 		}
 
+		template<typename TStream> void serializeState(TStream& _s)
+		{
+			PeripheralBase::serializeState(_s);
+			_s(m_writtenFlags, m_readFlags, m_txBytes, m_txData, m_rxData, m_rxd,
+				m_pendingInterruptRequests, m_readTimeoutCycles, m_forceTxde);
+		}
+
 		void setRxEmptyCallback(const CallbackRxEmpty& _rxEmptyCallback)
 		{
 			m_rxEmptyCallback = _rxEmptyCallback;
